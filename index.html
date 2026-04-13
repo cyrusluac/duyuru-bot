@@ -3,298 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BuzAjans QUANTUM v5.0</title>
+    <title>BuzAjans NEURAL v6.0</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap');
 
         :root {
-            --bg: #020205;
-            --panel: #0a0a12;
-            --accent: #00ffa3;
-            --neon-blue: #00d1ff;
-            --neon-purple: #9d00ff;
-            --text: #e0e0e0;
-            --border: #1a1a2e;
+            --bg: #030303;
+            --card: #0d0d12;
+            --accent: #ff00ff; /* Neon Magenta */
+            --cyan: #00ffff;
+            --gold: #ffcc00;
+            --border: #22222b;
+            --text: #ffffff;
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Space Grotesk', sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; padding: 20px; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 30px; font-size: 14px; }
 
-        /* Background Animation */
-        .bg-glow {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, transparent 80%);
-            z-index: -1; opacity: 0.5;
-        }
+        /* --- UI Elements --- */
+        .neural-grid { display: grid; grid-template-columns: 280px 1fr 320px; gap: 20px; max-width: 1600px; margin: 0 auto; }
+        .module { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; position: relative; }
+        
+        /* Neon Header */
+        .title-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .title-bar h2 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--cyan); }
+        .ping { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--gold); }
 
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .main-panel, .side-panel {
-            background: var(--panel);
-            border-radius: 24px;
-            border: 1px solid var(--border);
-            padding: 25px;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.8);
-        }
-
-        /* --- Header --- */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .header h1 { font-weight: 700; font-size: 24px; background: linear-gradient(to right, var(--accent), var(--neon-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .status-pill { background: rgba(0,255,163,0.1); border: 1px solid var(--accent); color: var(--accent); padding: 5px 15px; border-radius: 50px; font-size: 12px; display: flex; align-items: center; gap: 8px; }
-
-        /* --- Inputs --- */
-        .field-label { font-size: 12px; color: var(--neon-blue); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; display: block; }
+        /* Inputs */
         textarea, input, select {
-            width: 100%; background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: #fff; margin-bottom: 20px; transition: 0.3s;
+            width: 100%; background: #000; border: 1px solid var(--border); border-radius: 8px; 
+            padding: 12px; color: #fff; margin-bottom: 10px; transition: 0.3s;
         }
-        textarea:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,255,163,0.2); outline: none; }
+        textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 10px rgba(255,0,255,0.2); }
 
-        /* --- Scheduler (Planlayıcı) --- */
-        .scheduler-box {
-            background: rgba(157, 0, 255, 0.05);
-            border: 1px dashed var(--neon-purple);
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 20px;
+        /* Snippet Buttons */
+        .snippet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .s-btn { background: #1a1a25; border: 1px solid var(--border); color: #ccc; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 11px; }
+        .s-btn:hover { background: var(--border); color: var(--cyan); }
+
+        /* Voice Button */
+        .mic-btn {
+            background: linear-gradient(45deg, #ff0055, #ff00ff); border: none; padding: 10px;
+            border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
 
-        /* --- Button Matrix --- */
-        .btn-matrix { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-bottom: 10px; }
-        .add-btn { background: none; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 20px; }
+        /* Queue System */
+        .queue-item { background: #000; border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 12px; }
 
-        /* --- Preview --- */
-        .preview-phone {
-            background: #1c1c1c;
-            border-radius: 30px;
-            padding: 15px;
-            height: 400px;
-            border: 4px solid #333;
-            position: relative;
+        /* Command Button */
+        .cmd-btn {
+            width: 100%; padding: 18px; background: none; border: 2px solid var(--cyan); color: var(--cyan);
+            font-weight: 800; border-radius: 12px; cursor: pointer; transition: 0.3s; margin-top: 10px;
         }
-        .msg-bubble { background: #2b2b2b; padding: 10px; border-radius: 10px; font-size: 14px; margin-bottom: 10px; }
-        .preview-btn { background: #3a3a3a; color: #4facfe; text-align: center; padding: 8px; border-radius: 5px; font-size: 12px; margin-top: 5px; border: 1px solid #4facfe; }
+        .cmd-btn:hover { background: var(--cyan); color: #000; box-shadow: 0 0 20px rgba(0,255,255,0.4); }
 
-        /* --- Send Button --- */
-        .launch-btn {
-            width: 100%; padding: 20px; background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple)); border: none; border-radius: 15px; color: white; font-weight: 700; cursor: pointer; font-size: 18px; margin-top: 10px;
-        }
-        .launch-btn:hover { transform: scale(1.02); filter: brightness(1.2); }
+        /* Glow Animations */
+        .pulse { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* --- Terminal --- */
-        .terminal { background: #000; height: 150px; border-radius: 12px; padding: 10px; font-family: 'JetBrains Mono'; font-size: 11px; overflow-y: auto; color: #888; border: 1px solid var(--border); }
-        .log-green { color: var(--accent); }
-        .log-purple { color: var(--neon-purple); }
-
-        @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<div class="bg-glow"></div>
-
-<div class="grid-layout">
-    <div class="main-panel">
-        <div class="header">
-            <h1>QUANTUM DUYURU V5</h1>
-            <div class="status-pill"><div style="width:8px; height:8px; background:var(--accent); border-radius:50%"></div> AKTİF</div>
+<div class="neural-grid">
+    <div class="module">
+        <div class="title-bar">
+            <h2>Hızlı Komutlar</h2>
+        </div>
+        
+        <div class="snippet-grid">
+            <button class="s-btn" onclick="addSnippet('rules')">⚖️ Kurallar</button>
+            <button class="s-btn" onclick="addSnippet('price')">💰 Fiyatlar</button>
+            <button class="s-btn" onclick="addSnippet('contact')">📩 İletişim</button>
+            <button class="s-btn" onclick="addSnippet('bank')">🏦 Ödeme</button>
         </div>
 
-        <div class="scheduler-box">
-            <span class="field-label">⏰ Otonom Planlayıcı (Her Gün)</span>
-            <div style="display: flex; gap: 15px;">
-                <input type="time" id="scheduleTime" style="margin:0;">
-                <button onclick="setSchedule()" class="add-btn" style="margin:0; width: 150px;">ZAMANI KUR</button>
-            </div>
-            <div id="countdown" style="font-size: 12px; margin-top: 10px; color: var(--neon-purple);">Planlayıcı beklemede...</div>
+        <span style="font-size: 11px; color: var(--gold);">Otomatik Değişkenler:</span>
+        <div style="font-size: 10px; color: #666; margin-top: 5px; line-height: 1.6;">
+            {tarih} - Güncel Tarih<br>
+            {saat} - Güncel Saat<br>
+            {id} - Benzersiz İşlem ID
         </div>
 
-        <span class="field-label">Mesaj İçeriği</span>
-        <textarea id="mainText" rows="8" placeholder="HTML destekli mesajınızı yazın..." oninput="updatePreview()"></textarea>
-
-        <span class="field-label">Medya Linki (Foto/Video)</span>
-        <input type="text" id="mediaUrl" placeholder="https://... (Görsel veya Video Linki)" oninput="updatePreview()">
-
-        <span class="field-label">Buton Matrisi</span>
-        <div id="buttonContainer"></div>
-        <button class="add-btn" onclick="addButton()">+ Yeni Buton Ekle</button>
-
-        <div class="terminal" id="logger">
-            <div>> Quantum Terminal Ready...</div>
+        <hr style="border:0; border-top:1px solid var(--border); margin: 20px 0;">
+        
+        <div class="title-bar">
+            <h2>Kuyruk (Queue)</h2>
+        </div>
+        <div id="queueList">
+            <div style="color: #444; font-size: 11px;">Bekleyen işlem yok...</div>
         </div>
     </div>
 
-    <div class="side-panel">
-        <span class="field-label">Canlı Önizleme</span>
-        <div class="preview-phone">
-            <div id="p-media" style="width:100%; height:150px; background:#333; border-radius:10px; margin-bottom:10px; display:none; background-size:cover;"></div>
-            <div class="msg-bubble" id="p-text">Mesajınız burada görünecek...</div>
-            <div id="p-btns"></div>
+    <div class="module">
+        <div class="title-bar">
+            <h2>Neural Editor</h2>
+            <div class="ping" id="pingDisplay">Lat: 0ms</div>
         </div>
 
-        <div style="margin-top: 25px;">
-            <span class="field-label">Sistem Ayarları</span>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <select id="parseMode">
-                    <option value="HTML">HTML</option>
-                    <option value="Markdown">Markdown</option>
-                </select>
-                <select id="priority">
-                    <option value="high">Yüksek Hız</option>
-                    <option value="silent">Sessiz Mod</option>
-                </select>
-            </div>
-            
-            <button class="launch-btn" onclick="sendNow()">HEMEN GÖNDER</button>
-            <p style="text-align: center; font-size: 10px; color: var(--text-dim); margin-top: 15px;">* Planlanan mesajlar için bu sekmenin açık kalması gerekir.</p>
+        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+            <input type="text" id="mediaUrl" placeholder="Görsel, Video veya Belge URL'si..." style="margin:0;">
+            <button class="mic-btn" onclick="startVoice()" title="Sesle Yaz">🎤</button>
+        </div>
+
+        <textarea id="mainEditor" rows="15" placeholder="Mesajınızı kurgulayın..."></textarea>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <button class="cmd-btn" style="border-color: var(--accent); color: var(--accent);" onclick="addToQueue()">SIRAYA EKLE</button>
+            <button class="cmd-btn" onclick="sendNeural()">SİSTEMİ TETİKLE</button>
+            <button class="cmd-btn" style="border-color: #fff; color: #fff;" onclick="clearAll()">RESET</button>
+        </div>
+    </div>
+
+    <div class="module">
+        <div class="title-bar">
+            <h2>Otonom Mod</h2>
+            <div class="pulse" style="width:8px; height:8px; background:red; border-radius:50%"></div>
+        </div>
+
+        <div style="background: #000; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+            <label style="font-size: 10px; color: var(--cyan);">GÜNLÜK PLANLAYICI</label>
+            <input type="time" id="planTime" style="margin-top:5px;">
+            <button class="s-btn" style="width:100%" onclick="savePlan()">Planı Kaydet</button>
+        </div>
+
+        <div id="statsArea" style="font-family: 'JetBrains Mono'; font-size: 12px; color: #888;">
+            > Total Sent: <span id="st-total" style="color: var(--cyan);">0</span><br>
+            > Success Rate: <span style="color: var(--gold);">100%</span><br>
+            > Last Broadcast: <span id="st-last">None</span>
+        </div>
+
+        <div id="logNeural" style="margin-top: 20px; font-size: 10px; color: #555; height: 150px; overflow-y: auto; border-top: 1px solid var(--border); padding-top: 10px;">
+            [SYSTEM] Neural Engine v6.0 Online...
         </div>
     </div>
 </div>
 
 <script>
-    const CONFIG = {
+    const API = {
         token: '8789549704:AAEE0eDE2QDy4CBFRrStb0X0XerMjwrM-wI',
         chatId: '-1003791533428'
     };
 
-    let scheduledTime = localStorage.getItem('scheduledTime') || "";
-    if(scheduledTime) document.getElementById('scheduleTime').value = scheduledTime;
-
-    // --- BUTON SİSTEMİ ---
-    function addButton() {
-        const div = document.createElement('div');
-        div.className = 'btn-matrix';
-        div.innerHTML = `
-            <input type="text" placeholder="Metin" class="b-label" oninput="updatePreview()">
-            <input type="text" placeholder="URL" class="b-url" oninput="updatePreview()">
-            <button onclick="this.parentElement.remove(); updatePreview()" style="background:none; border:none; color:red; cursor:pointer">X</button>
-        `;
-        document.getElementById('buttonContainer').appendChild(div);
-    }
-
-    // --- CANLI ÖNİZLEME ---
-    function updatePreview() {
-        const text = document.getElementById('mainText').value;
-        const media = document.getElementById('mediaUrl').value;
-        
-        document.getElementById('p-text').innerHTML = text || "Mesajınız burada görünecek...";
-        
-        const mediaDiv = document.getElementById('p-media');
-        if(media) {
-            mediaDiv.style.display = "block";
-            mediaDiv.style.backgroundImage = `url('${media}')`;
-        } else {
-            mediaDiv.style.display = "none";
-        }
-
-        const btnContainer = document.getElementById('p-btns');
-        btnContainer.innerHTML = "";
-        document.querySelectorAll('.btn-matrix').forEach(row => {
-            const label = row.querySelector('.b-label').value;
-            if(label) {
-                const b = document.createElement('div');
-                b.className = "preview-btn";
-                b.textContent = label;
-                btnContainer.appendChild(b);
-            }
-        });
-    }
-
-    // --- LOG SİSTEMİ ---
-    function log(msg, color = "") {
-        const logger = document.getElementById('logger');
-        const div = document.createElement('div');
-        div.style.color = color;
-        div.textContent = `[${new Date().toLocaleTimeString()}] > ${msg}`;
-        logger.prepend(div);
-    }
-
-    // --- PLANLAYICI (CRON) ---
-    function setSchedule() {
-        scheduledTime = document.getElementById('scheduleTime').value;
-        localStorage.setItem('scheduledTime', scheduledTime);
-        log(`Duyuru her gün ${scheduledTime} saatine kuruldu.`, "var(--neon-purple)");
-    }
-
-    setInterval(() => {
-        if(!scheduledTime) return;
-        
-        const now = new Date();
-        const current = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-        
-        const [h, m] = scheduledTime.split(':');
-        const target = new Date();
-        target.setHours(h, m, 0);
-
-        let diff = target - now;
-        if(diff < 0) diff += 86400000; // Yarın için
-
-        const hours = Math.floor(diff / 3600000);
-        const mins = Math.floor((diff % 3600000) / 60000);
-        const secs = Math.floor((diff % 60000) / 1000);
-
-        document.getElementById('countdown').textContent = `Sonraki Otomatik Duyuru: ${hours}sa ${mins}dk ${secs}sn`;
-
-        if(current === scheduledTime && now.getSeconds() === 0) {
-            log("Otomatik zamanlama tetiklendi! Gönderiliyor...", "var(--accent)");
-            sendNow();
-        }
-    }, 1000);
-
-    // --- GÖNDERİM MOTORU ---
-    async function sendNow() {
-        const text = document.getElementById('mainText').value;
-        const media = document.getElementById('mediaUrl').value;
-        const parseMode = document.getElementById('parseMode').value;
-        const priority = document.getElementById('priority').value;
-
-        // Butonları Derle
-        const buttons = [];
-        document.querySelectorAll('.btn-matrix').forEach(row => {
-            const label = row.querySelector('.b-label').value;
-            const url = row.querySelector('.b-url').value;
-            if(label && url) buttons.push([{ text: label, url: url }]);
-        });
-
-        let method = media ? "sendPhoto" : "sendMessage";
-        let payload = {
-            chat_id: CONFIG.chatId,
-            parse_mode: parseMode,
-            disable_notification: (priority === 'silent'),
-            reply_markup: { inline_keyboard: buttons }
+    // --- SES TANIMA ---
+    function startVoice() {
+        const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if(!Speech) return alert("Tarayıcınız ses desteği sunmuyor.");
+        const rec = new Speech();
+        rec.lang = 'tr-TR';
+        rec.onstart = () => log("Ses dinleniyor...", "var(--accent)");
+        rec.onresult = (e) => {
+            document.getElementById('mainEditor').value += e.results[0][0].transcript;
         };
+        rec.start();
+    }
+
+    // --- SNIPPETS ---
+    function addSnippet(type) {
+        const area = document.getElementById('mainEditor');
+        const data = {
+            rules: "⚠️ **GRUP KURALLARI**\n1. Küfür yasaktır.\n2. Spam yapmayın.",
+            price: "💰 **GÜNCEL FİYAT LİSTESİ**\n- Standart: 100₺\n- Premium: 250₺",
+            contact: "📩 **DESTEK HATTI**\n@BuzAjansDestek",
+            bank: "🏦 **ÖDEME BİLGİLERİ**\nIBAN: TR00 0000..."
+        };
+        area.value += data[type];
+    }
+
+    // --- DEĞİŞKENLERİ DÖNÜŞTÜR ---
+    function parseVariables(text) {
+        const now = new Date();
+        return text
+            .replace(/{tarih}/g, now.toLocaleDateString('tr-TR'))
+            .replace(/{saat}/g, now.toLocaleTimeString('tr-TR'))
+            .replace(/{id}/g, Math.random().toString(36).substr(2, 9).toUpperCase());
+    }
+
+    // --- ANALİTİK PİNG ---
+    setInterval(async () => {
+        const start = Date.now();
+        try {
+            await fetch(`https://api.telegram.org/bot${API.token}/getMe`);
+            document.getElementById('pingDisplay').textContent = `Lat: ${Date.now() - start}ms`;
+        } catch(e) {}
+    }, 5000);
+
+    // --- SIRALAMA SİSTEMİ ---
+    const queue = [];
+    function addToQueue() {
+        const msg = document.getElementById('mainEditor').value;
+        if(!msg) return;
+        queue.push({ msg, time: new Date().toLocaleTimeString() });
+        updateQueueUI();
+        log("Mesaj sıraya eklendi.");
+    }
+
+    function updateQueueUI() {
+        const container = document.getElementById('queueList');
+        container.innerHTML = queue.map((item, index) => `
+            <div class="queue-item">
+                <b>#${index+1}</b> ${item.msg.substring(0, 30)}... <br>
+                <small style="color:var(--cyan)">Eklenme: ${item.time}</small>
+            </div>
+        `).join('');
+    }
+
+    // --- GÖNDERİM ---
+    async function sendNeural() {
+        let text = document.getElementById('mainEditor').value;
+        const media = document.getElementById('mediaUrl').value;
+        
+        text = parseVariables(text);
+        log("İşlem başlatıldı...");
+
+        let method = "sendMessage";
+        let payload = { chat_id: API.chatId, parse_mode: 'HTML', text: text };
 
         if(media) {
-            payload.photo = media;
-            payload.caption = text;
-        } else {
-            payload.text = text;
+            const ext = media.split('.').pop().toLowerCase();
+            if(['jpg', 'jpeg', 'png'].includes(ext)) method = "sendPhoto", payload.photo = media, payload.caption = text;
+            else if(['mp4'].includes(ext)) method = "sendVideo", payload.video = media, payload.caption = text;
+            else method = "sendDocument", payload.document = media, payload.caption = text;
         }
 
         try {
-            const res = await fetch(`https://api.telegram.org/bot${CONFIG.token}/${method}`, {
+            const res = await fetch(`https://api.telegram.org/bot${API.token}/${method}`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
             const data = await res.json();
             if(data.ok) {
-                log("Duyuru başarıyla yayına girdi!", "var(--accent)");
+                log("Broadcasting Successful!", "var(--cyan)");
+                document.getElementById('st-total').textContent = parseInt(document.getElementById('st-total').textContent) + 1;
+                document.getElementById('st-last').textContent = new Date().toLocaleTimeString();
             } else {
-                log("Hata: " + data.description, "red");
+                log("Error: " + data.description, "red");
             }
-        } catch (e) {
-            log("Bağlantı hatası!", "red");
-        }
+        } catch(e) { log("Fatal Error: Connection Lost", "red"); }
     }
 
-    // Başlangıçta önizlemeyi çalıştır
-    updatePreview();
+    function log(msg, color = "#555") {
+        const l = document.getElementById('logNeural');
+        l.innerHTML = `<div style="color:${color}">[${new Date().toLocaleTimeString()}] ${msg}</div>` + l.innerHTML;
+    }
+
+    function clearAll() {
+        document.getElementById('mainEditor').value = "";
+        document.getElementById('mediaUrl').value = "";
+    }
 </script>
 
 </body>
