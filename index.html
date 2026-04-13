@@ -1,1 +1,752 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Duyuru Bot</title></head><body style="background:#080b10;color:#fff;font-family:monospace;padding:20px;max-width:500px;margin:0 auto"><h2 style="color:#29b6f6">✈️ BuzAjans Duyuru</h2><br><textarea id="m" style="width:100%;height:150px;background:#0d1520;color:#fff;border:1px solid #1a2332;border-radius:8px;padding:12px;font-size:14px" placeholder="Mesajınızı yazın..."></textarea><br><br><button onclick="send()" style="width:100%;padding:16px;background:#0088cc;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer">📢 GÖNDER</button><br><br><div id="log" style="color:#00e676;font-size:12px"></div><script>async function send(){const m=document.getElementById('m').value.trim();if(!m){alert('Mesaj boş!');return}document.getElementById('log').textContent='Gönderiliyor...';const r=await fetch('https://api.telegram.org/bot8789549704:AAEE0eDE2QDy4CBFRrStb0X0XerMjwrM-wI/sendMessage?chat_id=-1003791533428&text='+encodeURIComponent(m));const d=await r.json();document.getElementById('log').textContent=d.ok?'✅ Gönderildi! ID:'+d.result.message_id:'❌ Hata: '+d.description}</script></body></html>
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BuzAjans · Duyuru Bot</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Unbounded:wght@400;700;900&display=swap');
+
+:root {
+–bg: #070a0f;
+–s1: #0c1018;
+–s2: #111820;
+–border: #1c2535;
+–accent: #0ea5e9;
+–accent2: #06b6d4;
+–green: #10b981;
+–red: #ef4444;
+–yellow: #f59e0b;
+–text: #e2e8f0;
+–muted: #475569;
+}
+
+- { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+font-family: ‘JetBrains Mono’, monospace;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+/* Animated background */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background:
+radial-gradient(ellipse 80% 50% at 50% -10%, rgba(14,165,233,0.15) 0%, transparent 60%),
+radial-gradient(ellipse 40% 30% at 80% 80%, rgba(6,182,212,0.08) 0%, transparent 50%);
+pointer-events: none;
+z-index: 0;
+}
+
+/* Grid */
+body::after {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image:
+linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px),
+linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px);
+background-size: 32px 32px;
+pointer-events: none;
+z-index: 0;
+}
+
+.app { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 0 0 60px; }
+
+/* ── HEADER ── */
+.header {
+padding: 28px 20px 20px;
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: center;
+gap: 14px;
+position: sticky;
+top: 0;
+background: rgba(7,10,15,0.92);
+backdrop-filter: blur(12px);
+z-index: 10;
+}
+
+.logo-wrap {
+width: 44px; height: 44px;
+background: linear-gradient(135deg, #0284c7, #06b6d4);
+border-radius: 12px;
+display: flex; align-items: center; justify-content: center;
+font-size: 22px;
+box-shadow: 0 0 20px rgba(14,165,233,0.3);
+flex-shrink: 0;
+}
+
+.header-text { flex: 1; }
+
+.header-text h1 {
+font-family: ‘Unbounded’, sans-serif;
+font-size: 15px;
+font-weight: 900;
+background: linear-gradient(90deg, var(–accent), var(–accent2));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+letter-spacing: -0.3px;
+}
+
+.header-text p { font-size: 10px; color: var(–muted); margin-top: 2px; letter-spacing: 1px; }
+
+.live-badge {
+display: flex; align-items: center; gap: 6px;
+background: rgba(16,185,129,0.1);
+border: 1px solid rgba(16,185,129,0.2);
+border-radius: 20px;
+padding: 5px 10px;
+font-size: 10px;
+color: var(–green);
+letter-spacing: 0.5px;
+}
+
+.live-dot {
+width: 6px; height: 6px;
+border-radius: 50%;
+background: var(–green);
+box-shadow: 0 0 6px var(–green);
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── SECTIONS ── */
+.section { padding: 20px 20px 0; }
+
+.sec-label {
+font-size: 9px;
+letter-spacing: 2.5px;
+text-transform: uppercase;
+color: var(–accent);
+margin-bottom: 10px;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.sec-label::after { content:’’; flex:1; height:1px; background:var(–border); }
+
+/* ── TARGET CARD ── */
+.target-card {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: 14px;
+padding: 14px 16px;
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.target-avatar {
+width: 40px; height: 40px;
+background: linear-gradient(135deg, #1e3a5f, #0284c7);
+border-radius: 10px;
+display: flex; align-items: center; justify-content: center;
+font-size: 18px; flex-shrink: 0;
+}
+
+.target-info { flex: 1; }
+.target-name { font-size: 14px; font-weight: 700; }
+.target-meta { font-size: 10px; color: var(–muted); margin-top: 3px; }
+
+.member-count {
+text-align: right;
+}
+
+.member-count .num {
+font-family: ‘Unbounded’, sans-serif;
+font-size: 18px;
+font-weight: 700;
+color: var(–accent);
+display: block;
+}
+
+.member-count .lbl { font-size: 9px; color: var(–muted); }
+
+/* ── STATS ROW ── */
+.stats-row {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 10px;
+margin-top: 10px;
+}
+
+.stat-card {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 12px;
+text-align: center;
+}
+
+.stat-num {
+font-family: ‘Unbounded’, sans-serif;
+font-size: 20px;
+font-weight: 700;
+color: var(–text);
+display: block;
+}
+
+.stat-lbl { font-size: 9px; color: var(–muted); margin-top: 4px; letter-spacing: 0.5px; }
+
+/* ── TEMPLATES ── */
+.tpl-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 8px;
+}
+
+.tpl-btn {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: 10px;
+padding: 10px 8px;
+cursor: pointer;
+transition: all 0.15s;
+text-align: center;
+}
+
+.tpl-btn:active { background: var(–s2); border-color: var(–accent); transform: scale(0.97); }
+
+.tpl-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+.tpl-name { font-family: ‘JetBrains Mono’, monospace; font-size: 9px; color: var(–muted); letter-spacing: 0.5px; }
+
+/* ── MESSAGE ── */
+.msg-wrap { position: relative; }
+
+textarea {
+width: 100%;
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: 14px;
+color: var(–text);
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 14px;
+line-height: 1.7;
+padding: 16px 16px 44px;
+min-height: 180px;
+resize: none;
+outline: none;
+transition: border-color 0.2s, box-shadow 0.2s;
+-webkit-appearance: none;
+}
+
+textarea:focus {
+border-color: var(–accent);
+box-shadow: 0 0 0 3px rgba(14,165,233,0.1);
+}
+
+textarea::placeholder { color: #1e3a5f; }
+
+.msg-footer {
+position: absolute;
+bottom: 12px;
+left: 14px;
+right: 14px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+pointer-events: none;
+}
+
+.char-bar {
+height: 3px;
+width: 80px;
+background: var(–border);
+border-radius: 2px;
+overflow: hidden;
+}
+
+.char-fill { height: 100%; background: var(–accent); border-radius: 2px; width: 0%; transition: width 0.2s; }
+.char-num { font-size: 10px; color: var(–muted); }
+
+/* ── OPTIONS ── */
+.opts-grid {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 10px;
+}
+
+.opt-card {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: 12px;
+padding: 14px;
+cursor: pointer;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+gap: 10px;
+user-select: none;
+}
+
+.opt-card:active { transform: scale(0.98); }
+.opt-card.on { border-color: var(–accent); background: rgba(14,165,233,0.06); }
+
+.opt-icon-wrap {
+width: 32px; height: 32px;
+background: var(–s2);
+border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+font-size: 16px;
+flex-shrink: 0;
+transition: background 0.2s;
+}
+
+.opt-card.on .opt-icon-wrap { background: rgba(14,165,233,0.15); }
+
+.opt-text { flex: 1; }
+.opt-title { font-size: 11px; font-weight: 700; }
+.opt-desc { font-size: 9px; color: var(–muted); margin-top: 2px; }
+
+.toggle {
+width: 32px; height: 18px;
+background: var(–border);
+border-radius: 9px;
+position: relative;
+transition: background 0.2s;
+flex-shrink: 0;
+}
+
+.toggle::after {
+content: ‘’;
+position: absolute;
+width: 12px; height: 12px;
+background: white;
+border-radius: 50%;
+top: 3px; left: 3px;
+transition: transform 0.2s;
+}
+
+.opt-card.on .toggle { background: var(–accent); }
+.opt-card.on .toggle::after { transform: translateX(14px); }
+
+/* ── SEND BUTTON ── */
+.send-section { padding: 20px; }
+
+.send-btn {
+width: 100%;
+padding: 18px;
+background: linear-gradient(135deg, #0284c7, #06b6d4);
+border: none;
+border-radius: 16px;
+color: white;
+font-family: ‘Unbounded’, sans-serif;
+font-weight: 700;
+font-size: 13px;
+letter-spacing: 1px;
+cursor: pointer;
+position: relative;
+overflow: hidden;
+transition: all 0.3s;
+-webkit-appearance: none;
+text-transform: uppercase;
+}
+
+.send-btn::before {
+content: ‘’;
+position: absolute;
+top: 0; left: -100%;
+width: 100%; height: 100%;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+transition: left 0.5s;
+}
+
+.send-btn:active::before { left: 100%; }
+.send-btn:active { transform: scale(0.98); }
+.send-btn:disabled { opacity: 0.5; transform: none; }
+
+/* ── LOG ── */
+.log-section { padding: 0 20px; }
+
+.log-box {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: 14px;
+overflow: hidden;
+}
+
+.log-top {
+padding: 10px 14px;
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.log-title { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(–muted); }
+
+.log-actions { display: flex; gap: 8px; }
+
+.log-btn {
+background: none;
+border: 1px solid var(–border);
+color: var(–muted);
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 9px;
+padding: 3px 8px;
+border-radius: 4px;
+cursor: pointer;
+letter-spacing: 0.5px;
+transition: all 0.2s;
+}
+
+.log-btn:active { border-color: var(–accent); color: var(–accent); }
+
+.log-body {
+padding: 12px 14px;
+min-height: 80px;
+max-height: 220px;
+overflow-y: auto;
+font-size: 11px;
+line-height: 2;
+}
+
+.log-body::-webkit-scrollbar { width: 3px; }
+.log-body::-webkit-scrollbar-thumb { background: var(–border); border-radius: 2px; }
+
+.log-empty { color: #1e3a5f; }
+
+.log-row { display: flex; gap: 8px; animation: fadeUp 0.2s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+.log-time { color: var(–muted); flex-shrink: 0; }
+.c-ok { color: var(–green); }
+.c-err { color: var(–red); }
+.c-inf { color: var(–accent); }
+.c-warn { color: var(–yellow); }
+
+/* ── SUCCESS OVERLAY ── */
+.overlay {
+position: fixed; inset: 0;
+background: rgba(7,10,15,0.95);
+display: flex; align-items: center; justify-content: center;
+z-index: 100;
+opacity: 0; pointer-events: none;
+transition: opacity 0.3s;
+}
+
+.overlay.show { opacity: 1; pointer-events: all; }
+
+.overlay-card {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: 24px;
+padding: 40px 32px;
+text-align: center;
+max-width: 280px;
+transform: scale(0.85);
+transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.overlay.show .overlay-card { transform: scale(1); }
+
+.overlay-icon { font-size: 56px; display: block; margin-bottom: 16px; animation: bounce 0.6s ease; }
+@keyframes bounce { 0%{transform:scale(0)} 60%{transform:scale(1.2)} 100%{transform:scale(1)} }
+
+.overlay-title {
+font-family: ‘Unbounded’, sans-serif;
+font-size: 18px;
+font-weight: 900;
+color: var(–green);
+margin-bottom: 8px;
+}
+
+.overlay-sub { font-size: 11px; color: var(–muted); line-height: 1.6; }
+
+.overlay-close {
+margin-top: 24px;
+width: 100%;
+padding: 14px;
+background: linear-gradient(135deg, #0284c7, #06b6d4);
+border: none;
+border-radius: 12px;
+color: white;
+font-family: ‘Unbounded’, sans-serif;
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 1px;
+cursor: pointer;
+-webkit-appearance: none;
+}
+</style>
+
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+
+  <div class="header">
+    <div class="logo-wrap">✈️</div>
+    <div class="header-text">
+      <h1>BUZAJANS DUYURU</h1>
+      <p>TELEGRAM BOT PANEL · v2.0</p>
+    </div>
+    <div class="live-badge"><div class="live-dot"></div>CANLI</div>
+  </div>
+
+  <!-- Target -->
+
+  <div class="section">
+    <div class="sec-label">Hedef</div>
+    <div class="target-card">
+      <div class="target-avatar">👥</div>
+      <div class="target-info">
+        <div class="target-name">test bot</div>
+        <div class="target-meta">Supergroup · Yönetici: BuzAjansDuyuru</div>
+      </div>
+      <div class="member-count">
+        <span class="num">2</span>
+        <span class="lbl">ÜYELER</span>
+      </div>
+    </div>
+
+```
+<div class="stats-row">
+  <div class="stat-card">
+    <span class="stat-num" id="totalSent">0</span>
+    <div class="stat-lbl">Toplam</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-num" id="todaySent">0</span>
+    <div class="stat-lbl">Bugün</div>
+  </div>
+  <div class="stat-card">
+    <span class="stat-num" id="lastId">—</span>
+    <div class="stat-lbl">Son ID</div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- Templates -->
+
+  <div class="section" style="margin-top:16px">
+    <div class="sec-label">Hızlı Şablon</div>
+    <div class="tpl-grid">
+      <button class="tpl-btn" onclick="tpl('📢 DUYURU\n\n')"><span class="tpl-icon">📢</span><span class="tpl-name">Duyuru</span></button>
+      <button class="tpl-btn" onclick="tpl('🔔 HATIRLATMA\n\n')"><span class="tpl-icon">🔔</span><span class="tpl-name">Hatırlatma</span></button>
+      <button class="tpl-btn" onclick="tpl('⚠️ ÖNEMLİ\n\n')"><span class="tpl-icon">⚠️</span><span class="tpl-name">Önemli</span></button>
+      <button class="tpl-btn" onclick="tpl('🎉 ETKİNLİK\n\n📅 Tarih: \n🕐 Saat: \n📍 Yer: \n\n')"><span class="tpl-icon">🎉</span><span class="tpl-name">Etkinlik</span></button>
+      <button class="tpl-btn" onclick="tpl('🆕 YENİLİK\n\n')"><span class="tpl-icon">🆕</span><span class="tpl-name">Yenilik</span></button>
+      <button class="tpl-btn" onclick="tpl('🚨 ACİL\n\n')"><span class="tpl-icon">🚨</span><span class="tpl-name">Acil</span></button>
+    </div>
+  </div>
+
+  <!-- Message -->
+
+  <div class="section" style="margin-top:16px">
+    <div class="sec-label">Mesaj</div>
+    <div class="msg-wrap">
+      <textarea id="msgInput" placeholder="Duyuru mesajınızı yazın..." oninput="onInput()"></textarea>
+      <div class="msg-footer">
+        <div class="char-bar"><div class="char-fill" id="charFill"></div></div>
+        <span class="char-num" id="charNum">0 / 4096</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Options -->
+
+  <div class="section" style="margin-top:16px">
+    <div class="sec-label">Seçenekler</div>
+    <div class="opts-grid">
+      <div class="opt-card" id="oPin" onclick="tog('pin')">
+        <div class="opt-icon-wrap">📌</div>
+        <div class="opt-text">
+          <div class="opt-title">Sabitle</div>
+          <div class="opt-desc">Mesajı sabitle</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+      <div class="opt-card" id="oSilent" onclick="tog('silent')">
+        <div class="opt-icon-wrap">🔕</div>
+        <div class="opt-text">
+          <div class="opt-title">Sessiz</div>
+          <div class="opt-desc">Bildirim yok</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+      <div class="opt-card" id="oHtml" onclick="tog('html')">
+        <div class="opt-icon-wrap">🏷️</div>
+        <div class="opt-text">
+          <div class="opt-title">HTML</div>
+          <div class="opt-desc">Bold, italic...</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+      <div class="opt-card" id="oPreview" onclick="tog('preview')">
+        <div class="opt-icon-wrap">🔗</div>
+        <div class="opt-text">
+          <div class="opt-title">Link Önizleme</div>
+          <div class="opt-desc">Bağlantı göster</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Send -->
+
+  <div class="send-section" style="margin-top:16px">
+    <button class="send-btn" id="sendBtn" onclick="send()">
+      📢 &nbsp; DUYURUYU GÖNDER
+    </button>
+  </div>
+
+  <!-- Log -->
+
+  <div class="log-section">
+    <div class="sec-label" style="padding: 0">Gönderim Günlüğü</div>
+    <div class="log-box">
+      <div class="log-top">
+        <span class="log-title">// Terminal</span>
+        <div class="log-actions">
+          <button class="log-btn" onclick="clearLog()">Temizle</button>
+        </div>
+      </div>
+      <div class="log-body" id="logBody">
+        <div class="log-empty">Sistem hazır. Bekleniyor...</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Overlay -->
+
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <span class="overlay-icon">✅</span>
+    <div class="overlay-title">GÖNDERİLDİ!</div>
+    <div class="overlay-sub" id="overlayMsg">Mesaj başarıyla iletildi.</div>
+    <button class="overlay-close" onclick="closeOverlay()">TAMAM</button>
+  </div>
+</div>
+
+<script>
+const TOKEN = '8789549704:AAEE0eDE2QDy4CBFRrStb0X0XerMjwrM-wI';
+const CHAT  = '-1003791533428';
+
+const state = { pin:false, silent:false, html:false, preview:false };
+let totalSent = +localStorage.getItem('total') || 0;
+let todaySent = +localStorage.getItem('today_' + new Date().toDateString()) || 0;
+
+updateStats();
+
+function updateStats() {
+  document.getElementById('totalSent').textContent = totalSent;
+  document.getElementById('todaySent').textContent = todaySent;
+}
+
+function tpl(t) {
+  document.getElementById('msgInput').value = t;
+  onInput();
+  document.getElementById('msgInput').focus();
+}
+
+function onInput() {
+  const len = document.getElementById('msgInput').value.length;
+  document.getElementById('charNum').textContent = len + ' / 4096';
+  document.getElementById('charFill').style.width = Math.min(len / 4096 * 100, 100) + '%';
+  document.getElementById('charFill').style.background = len > 4000 ? '#ef4444' : len > 3000 ? '#f59e0b' : '#0ea5e9';
+}
+
+function tog(k) {
+  state[k] = !state[k];
+  const map = { pin:'oPin', silent:'oSilent', html:'oHtml', preview:'oPreview' };
+  document.getElementById(map[k]).classList.toggle('on', state[k]);
+}
+
+function addLog(type, msg) {
+  const b = document.getElementById('logBody');
+  const e = b.querySelector('.log-empty');
+  if (e) e.remove();
+  const t = new Date().toLocaleTimeString('tr-TR', { hour12: false });
+  const d = document.createElement('div');
+  d.className = 'log-row';
+  d.innerHTML = `<span class="log-time">[${t}]</span><span class="c-${type}">${msg}</span>`;
+  b.appendChild(d);
+  b.scrollTop = b.scrollHeight;
+}
+
+function clearLog() {
+  document.getElementById('logBody').innerHTML = '<div class="log-empty">Sistem hazır. Bekleniyor...</div>';
+}
+
+async function send() {
+  const msg = document.getElementById('msgInput').value.trim();
+  if (!msg) { alert('Mesaj boş olamaz!'); return; }
+
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳  GÖNDERİLİYOR...';
+  addLog('inf', 'Telegram API\'ye bağlanılıyor...');
+
+  const params = new URLSearchParams({ chat_id: CHAT, text: msg });
+  if (state.html) params.set('parse_mode', 'HTML');
+  if (state.silent) params.set('disable_notification', 'true');
+  if (!state.preview) params.set('disable_web_page_preview', 'true');
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?${params}`);
+    const data = await res.json();
+
+    if (data.ok) {
+      const msgId = data.result.message_id;
+      addLog('ok', `✓ Mesaj gönderildi (ID: ${msgId})`);
+      document.getElementById('lastId').textContent = msgId;
+
+      if (state.pin) {
+        addLog('inf', 'Sabitleniyor...');
+        const pr = await fetch(`https://api.telegram.org/bot${TOKEN}/pinChatMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: CHAT, message_id: msgId })
+        });
+        const pd = await pr.json();
+        addLog(pd.ok ? 'ok' : 'warn', pd.ok ? '📌 Mesaj sabitlendi' : '⚠️ Sabitleme başarısız: ' + pd.description);
+      }
+
+      totalSent++;
+      todaySent++;
+      localStorage.setItem('total', totalSent);
+      localStorage.setItem('today_' + new Date().toDateString(), todaySent);
+      updateStats();
+
+      document.getElementById('overlayMsg').textContent = `Mesaj ID: ${msgId} · Grup: test bot`;
+      document.getElementById('overlay').classList.add('show');
+      document.getElementById('msgInput').value = '';
+      onInput();
+
+    } else {
+      addLog('err', '✗ Hata: ' + data.description);
+      alert('Hata: ' + data.description);
+    }
+  } catch(e) {
+    addLog('err', '✗ Bağlantı hatası: ' + e.message);
+    alert('Bağlantı hatası!');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '📢   DUYURUYU GÖNDER';
+}
+
+function closeOverlay() {
+  document.getElementById('overlay').classList.remove('show');
+}
+</script>
+
+</body>
+</html>
